@@ -1,0 +1,11 @@
+// styles/_variables.module.scss
+$primaryColor: rgb(255, 255, 255);
+$textColor: rgb(0, 0, 0);
+$decorationColor: #9C38ED;
+$borderRadius: 10px;
+
+:export {
+  primaryColor: $primaryColor;
+  decorationColor: $decorationColor;
+  borderRedius: $borderRadius;
+}
