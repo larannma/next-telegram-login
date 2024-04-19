@@ -1,7 +1,8 @@
 import NextAuth from "next-auth";
-import { PrismaAdapter } from "@auth/prisma-adapter";
+// import { PrismaAdapter } from "@auth/prisma-adapter";
 import Credentials from "next-auth/providers/credentials";
 import { db } from "@/lib/db";
+
 
 
 declare module "next-auth" {
@@ -51,24 +52,27 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 						photo_url
 					} = credentials as { username: string, first_name: string, last_name: string, photo_url: string };
 
-					const user = await db.user.upsert({
-					  where: {
-						username
-						},
-					  update: {
-						first_name,
-						last_name,
-						photo_url
-					  },
-					  create: { 
-						username: username,
-						first_name: first_name,
-						last_name: last_name,
-						photo_url: photo_url
-					   },
-					});
-					console.log(user)
-					return user;
+					const user = await db.user.findUnique({
+						where: {
+							username,
+						}
+					})
+
+					if (user?.username){
+						return user;
+					}
+
+					const newUser = await db.user.create({
+						data: {
+							username,
+							first_name,
+							last_name,
+							photo_url
+						}
+					})
+				
+					return newUser;
+					
 				  } catch (error) {
 					console.error('Error authorizing user:', error);
 					return null;
